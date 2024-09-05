@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 )
@@ -70,4 +71,23 @@ func main() {
 	}
 
 	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Printf("Error reading response body: %v\n", err)
+		return
+	}
+
+	var gptResponse GTPResponse
+	err = json.Unmarshal(body, &gptResponse)
+	if err != nil {
+		fmt.Printf("Error unmarshalling response: %v\n", err)
+		return
+	}
+
+	if len(gptResponse.Choices) > 0 {
+		fmt.Printf("Answer: %s\n", gptResponse.Choices[0].Message.Content)
+	} else {
+		fmt.Println("No answer found.")
+	}
 }
