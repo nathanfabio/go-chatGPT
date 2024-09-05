@@ -29,4 +29,9 @@ func main() {
 		fmt.Println("OPENAI_API_KEY not set")
 		return
 	}
+
+var value string
+fmt.Print("Enter a monetary value: ")
+fmt.Scanln(&value)
+
 }
