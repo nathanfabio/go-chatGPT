@@ -9,21 +9,21 @@ import (
 	"os"
 )
 
-const apiURl = "https://api.openai.com/v1/completions"
+const apiURL = "https://api.openai.com/v1/chat/completions"
 
-type GTPRequest struct {
-	Messages []GTPMessage `json:"messages"`
+type GPTRequest struct {
+	Messages []GPTMessage `json:"messages"`
 	Model    string       `json:"model"`
 }
 
-type GTPMessage struct {
+type GPTMessage struct {
 	Role    string `json:"role"`
 	Content string `json:"content"`
 }
 
-type GTPResponse struct {
+type GPTResponse struct {
 	Choices []struct {
-		Message GTPMessage `json:"message"`
+		Message GPTMessage `json:"message"`
 	} `json:"choices"`
 }
 
@@ -39,8 +39,8 @@ func main() {
 	fmt.Scanln(&value)
 
 	//Create payload
-	requestBody, err := json.Marshal(GTPRequest{
-		Messages: []GTPMessage{
+	requestBody, err := json.Marshal(GPTRequest{
+		Messages: []GPTMessage{
 			{Role: "user", Content: fmt.Sprintf("Write the value %s in full.", value)},
 		},
 		Model: "gpt-3.5-turbo",
@@ -51,7 +51,7 @@ func main() {
 	}
 
 	//Create request
-	req, err := http.NewRequest("POST", apiURl, bytes.NewBuffer(requestBody))
+	req, err := http.NewRequest("POST", apiURL, bytes.NewBuffer(requestBody))
 	if err != nil {
 		fmt.Printf("Error creating request: %v\n", err)
 		return
@@ -78,7 +78,7 @@ func main() {
 		return
 	}
 
-	var gptResponse GTPResponse
+	var gptResponse GPTResponse
 	err = json.Unmarshal(body, &gptResponse)
 	if err != nil {
 		fmt.Printf("Error unmarshalling response: %v\n", err)
